@@ -11,14 +11,14 @@ fn main() {
     let mut words = Vec::new();
     read_file_to_vector("./data/corncob_lowercase.txt", &mut words);
 
-    let mut pw: Vec<String> = Vec::new();
+    let mut pwv: Vec<String> = Vec::new();
     for _i in 0..3 {
         let mut rng = rand::thread_rng();
         let val = rng.gen_range(1, words.len());
-        pw.push(words[val].clone());
+        pwv.push(words[val].clone());
     }
 
-    let pwstr = format!("{}.{}.{}", pw[0], pw[1], pw[2]);
+    let pw = format!("{}.{}.{}", pwv[0], pwv[1], pwv[2]);
 
     let title = format!("twpw {}", env!("CARGO_PKG_VERSION"));
     let frm = i_o::Frame {
@@ -26,16 +26,15 @@ fn main() {
         title_color: "blue".to_string(),
         x: 0,
         y: 0,
-        w: pwstr.len() as u16 + 4,
+        w: pw.len() as u16 + 4,
         h: 2,
     };
     frm.display();
 
     i_o::cmove(2, 1);
-    print!("{}", pwstr.green().bold());
+    print!("{}", pw.green().bold());
 
     i_o::cmove(0, 4);
-
 }
 
 fn read_file_to_vector(filename: &str, vector: &mut Vec<String>) {
