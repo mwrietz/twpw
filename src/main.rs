@@ -1,4 +1,4 @@
-use colored::Colorize;
+use colored::*;
 use rand::Rng;
 use std::env;
 use std::fs::File;
