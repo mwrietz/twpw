@@ -20,7 +20,7 @@ fn main() {
 
     let pw = format!("{}.{}.{}", pwv[0], pwv[1], pwv[2]);
 
-    let title = format!("twpw {}", env!("CARGO_PKG_VERSION"));
+    let title = format!("twpw v{}", env!("CARGO_PKG_VERSION"));
     let frm = i_o::Frame {
         title: title.to_string(),
         title_color: "blue".to_string(),
