@@ -5,8 +5,11 @@ use std::fs::File;
 use std::io::{self, BufRead};
 use std::path::Path;
 
+mod tui_gen;
+mod tui_frm;
+
 fn main() {
-    i_o::cls();
+    tui_gen::cls();
 
     let mut words = Vec::new();
     read_file_to_vector("./data/corncob_lowercase.txt", &mut words);
@@ -20,21 +23,23 @@ fn main() {
 
     let pw = format!("{}.{}.{}", pwv[0], pwv[1], pwv[2]);
 
-    let title = format!("twpw v{}", env!("CARGO_PKG_VERSION"));
-    let frm = i_o::Frame {
-        title: title.to_string(),
-        title_color: "blue".to_string(),
+    //let title = format!("twpw v{}", env!("CARGO_PKG_VERSION"));
+    //let frm = i_o::Frame {
+    let frm = tui_frm::Frame {
+        title: &format!("{} v{}", tui_gen::get_prog_name(), env!("CARGO_PKG_VERSION")),
+        title_color: "blue",
+        frame_color: "white",
         x: 0,
         y: 0,
-        w: pw.len() as u16 + 4,
+        w: pw.len() + 4,
         h: 2,
     };
     frm.display();
 
-    i_o::cmove(2, 1);
+    tui_gen::cmove(2, 1);
     print!("{}", pw.green().bold());
 
-    i_o::cmove(0, 4);
+    tui_gen::cmove(0, 4);
 }
 
 fn read_file_to_vector(filename: &str, vector: &mut Vec<String>) {
