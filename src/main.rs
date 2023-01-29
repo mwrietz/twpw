@@ -3,7 +3,6 @@ use rand::Rng;
 use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
-use std::path::Path;
 
 mod tui_gen;
 mod tui_frm;
@@ -11,20 +10,33 @@ mod tui_frm;
 fn main() {
     tui_gen::cls();
 
-    let mut words = Vec::new();
-    read_file_to_vector("./data/corncob_lowercase.txt", &mut words);
+    let data_path: String = dirs::home_dir()
+        .expect("Cannot get home path")
+        .join("Syncthing/active/computer/data/twpw/corncob_lowercase.txt")
+        .into_os_string()
+        .into_string()
+        .unwrap();
 
+    let mut words = Vec::new();
+
+    //read_file_to_vector(data_path, &mut words);
+    file_to_vector(&data_path, &mut words);
+
+    // pick three random words and put in vector
     let mut pwv: Vec<String> = Vec::new();
     for _i in 0..3 {
         let mut rng = rand::thread_rng();
         let val = rng.gen_range(1, words.len());
-        pwv.push(words[val].clone());
+        pwv.push(words[val]
+            .to_string()
+            .clone()
+            );
     }
 
+    // format password string
     let pw = format!("{}.{}.{}", pwv[0], pwv[1], pwv[2]);
 
-    //let title = format!("twpw v{}", env!("CARGO_PKG_VERSION"));
-    //let frm = i_o::Frame {
+    // draw frame of size required for password
     let frm = tui_frm::Frame {
         title: &format!("{} v{}", tui_gen::get_prog_name(), env!("CARGO_PKG_VERSION")),
         title_color: "blue",
@@ -36,26 +48,23 @@ fn main() {
     };
     frm.display();
 
+    // display the password in the frame
     tui_gen::cmove(2, 1);
     print!("{}", pw.green().bold());
 
     tui_gen::cmove(0, 4);
 }
 
-fn read_file_to_vector(filename: &str, vector: &mut Vec<String>) {
-    if let Ok(lines) = read_lines(filename) {
-        for line in lines {
-            if let Ok(ip) = line {
-                vector.push(ip);
+fn file_to_vector(file_path: &str, line_vector: &mut Vec<String>) {
+    let file = File::open(file_path).expect(&format!("Could not find data file: {}", file_path));
+    let lines = io::BufReader::new(file).lines();
+
+    for line in lines.into_iter() {
+        match line {
+            Ok(l) => line_vector.push(l),
+            Err(e) => {
+                panic!("Error msg: {}", e);
             }
         }
     }
-}
-
-fn read_lines<P>(filename: P) -> io::Result<io::Lines<io::BufReader<File>>>
-where
-    P: AsRef<Path>,
-{
-    let file = File::open(filename).expect("Could not find data file");
-    Ok(io::BufReader::new(file).lines())
 }
