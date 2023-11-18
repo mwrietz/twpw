@@ -4,8 +4,8 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead};
 
-mod tui_gen;
 mod tui_frm;
+mod tui_gen;
 
 fn main() {
     tui_gen::cls();
@@ -27,10 +27,7 @@ fn main() {
     for _i in 0..3 {
         let mut rng = rand::thread_rng();
         let val = rng.gen_range(1, words.len());
-        pwv.push(words[val]
-            .to_string()
-            .clone()
-            );
+        pwv.push(words[val].to_string().clone());
     }
 
     // format password string
@@ -38,7 +35,11 @@ fn main() {
 
     // draw frame of size required for password
     let frm = tui_frm::Frame {
-        title: &format!("{} v{}", tui_gen::get_prog_name(), env!("CARGO_PKG_VERSION")),
+        title: &format!(
+            "{} v{}",
+            tui_gen::get_prog_name(),
+            env!("CARGO_PKG_VERSION")
+        ),
         title_color: "blue",
         frame_color: "white",
         x: 0,
