@@ -57,7 +57,7 @@ fn main() {
 }
 
 fn file_to_vector(file_path: &str, line_vector: &mut Vec<String>) {
-    let file = File::open(file_path).expect(&format!("Could not find data file: {}", file_path));
+    let file = File::open(file_path).unwrap_or_else(|_| panic!("Could not find data file: {}", file_path));
     let lines = io::BufReader::new(file).lines();
 
     for line in lines.into_iter() {
